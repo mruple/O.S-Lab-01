@@ -19,7 +19,7 @@
 //
 //
 //
-// Signed:_____________________________________ Date:_____________
+// Signed: Mitchell Ruple Date: September 23 2022
 
 // 3460:426 Lab 1 - Basic C shell rev. 9/10/2020
 
@@ -73,6 +73,59 @@ int main(int argc, char *argv[]) {
 		 either execute it directly or build a new command structure to
 		 execute next
 	  */
+      pid = fork();
+      if(strcmp(argv[0],"C") && pid == 0 ) {
+         execvp("cp", argv);
+         wait(&status); //wait for child to process
+      }
+      else if(strcmp(argv[0], "D") && pid == 0) {
+         execvp("rm", argv);
+         wait(&status); // wait for child to process
+      }
+      else if(strcmp(argv[0], "M") && pid == 0) {
+         execvp("nano", argv);
+         wait(&status);
+      }
+      else if(strcmp(argv[0], "P") && pid == 0) {
+         execvp("more", argv);
+         wait(&status);
+      }
+      else if(strcmp(argv[0], "S") && pid == 0) {
+         execvp("firefox", NULL)
+      }
+      else if(strcmp(argv[0], "W") && pid == 0) {
+         execvp("clear", NULL);
+         wait(&status);
+      }
+      else if(strcmp(argv[0], "X") && pid == 0) {
+         execvp("", argv);
+         wait(&status);
+      }
+      else if(strcmp(argv[0], "E") && pid == 0) {
+         execvp("echo", argv);
+         wait(&status);
+      }
+      else if(strcmp(argv[0], "Q" && pid == 0)) {
+         break;
+      }
+      else if(strcmp(argv[0], "H") && pid == 0) {
+         execvp("man csh", NULL);
+         wait(&status);
+      }
+      else if(strcmp(argv[0], "L") && pid == 0) {
+         printf("\n");
+         execvp("pwd", NULL);
+         print("\n");
+         execvp("ls -l", NULL);
+         wait(&status);
+      }
+      else {
+         printPrompt();
+         /* Read the command line and parse it */
+         readCommand(cmdLine);
+         parseCommand(cmdLine, &command);
+         command.argv[command.argc] = NULL;
+      }
 	  
       /* Create a child process to execute the command */
       if ((pid = fork()) == 0) {
