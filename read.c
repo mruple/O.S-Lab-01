@@ -36,8 +36,12 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <limits.h>
+#include <sys/wait.h>
+#include <stdbool.h>
 
 #define MAX_ARGS		64
 #define MAX_ARG_LEN		16
@@ -61,7 +65,7 @@ int main(int argc, char *argv[]) {
    char cmdLine[MAX_LINE_LEN];
    struct command_t command;
 
-   while (TRUE) {
+   while (true) {
       printPrompt();
       /* Read the command line and parse it */
       readCommand(cmdLine);
@@ -73,51 +77,58 @@ int main(int argc, char *argv[]) {
 		 either execute it directly or build a new command structure to
 		 execute next
 	  */
-      pid = fork();
       if(strcmp(argv[0],"C") && pid == 0 ) {
-         execvp("cp", argv);
-         wait(&status); //wait for child to process
+         command.name = "cp";
+         //wait(&status);
       }
       else if(strcmp(argv[0], "D") && pid == 0) {
-         execvp("rm", argv);
-         wait(&status); // wait for child to process
+         command.name = "rm";
+         //execvp("rm", argv);
+         //wait(&status);
       }
       else if(strcmp(argv[0], "M") && pid == 0) {
-         execvp("nano", argv);
-         wait(&status);
+         command.name = "nano";
+         //execvp("nano", argv);
+         //wait(&status);
       }
       else if(strcmp(argv[0], "P") && pid == 0) {
-         execvp("more", argv);
-         wait(&status);
+         command.name = "more";
+         //execvp("more", argv);
+         //wait(&status);
       }
       else if(strcmp(argv[0], "S") && pid == 0) {
-         execvp("firefox", NULL)
+         command.name = "firefox";
+         //execvp("firefox", NULL);
       }
       else if(strcmp(argv[0], "W") && pid == 0) {
-         execvp("clear", NULL);
-         wait(&status);
+         command.name = "clear";
+         //wait(&status);
       }
       else if(strcmp(argv[0], "X") && pid == 0) {
-         execvp("", argv);
-         wait(&status);
+         command.name = "";
       }
       else if(strcmp(argv[0], "E") && pid == 0) {
-         execvp("echo", argv);
-         wait(&status);
+         command.name = "echo";
+         //execvp("echo", argv);
+         //wait(&status);
       }
-      else if(strcmp(argv[0], "Q" && pid == 0)) {
+      else if(strcmp(argv[0], "Q") && pid == 0) {
          break;
       }
       else if(strcmp(argv[0], "H") && pid == 0) {
-         execvp("man csh", NULL);
-         wait(&status);
+         command.name = "man csh";
+         //execvp("man csh", NULL);
+         //wait(&status);
       }
       else if(strcmp(argv[0], "L") && pid == 0) {
+         if((pid = fork()) == 0) {
          printf("\n");
          execvp("pwd", NULL);
-         print("\n");
+         printf("\n");
          execvp("ls -l", NULL);
+         }
          wait(&status);
+         
       }
       else {
          printPrompt();
@@ -181,8 +192,12 @@ void printPrompt() {
    /* Build the prompt string to have the machine name,
     * current directory, or other desired information
     */
-   promptString = ...;
-   printf("%s ", promptString);
+   char buffer[PATH_MAX];
+   if(getcwd(buffer, sizeof(buffer)) != NULL) {
+      printf("%s", buffer);
+   } else {
+      perror("Working directory search failed");
+   }
 }
 
 void readCommand(char *buffer) {
