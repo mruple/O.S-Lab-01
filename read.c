@@ -71,71 +71,90 @@ int main(int argc, char *argv[]) {
       readCommand(cmdLine);
       parseCommand(cmdLine, &command);
       command.argv[command.argc] = NULL;
-
 	  /*
 	     TODO: if the command is one of the shortcuts you're testing for
 		 either execute it directly or build a new command structure to
 		 execute next
 	  */
-      if(strcmp(argv[0],"C") && pid == 0 ) {
-         command.name = "cp";
-         //wait(&status);
+      if(strcmp(command.argv[0],"C") == 0) {
+         command.name = "cp"; //works "C (filesource)(filetarget)"
       }
-      else if(strcmp(argv[0], "D") && pid == 0) {
-         command.name = "rm";
-         //execvp("rm", argv);
-         //wait(&status);
+      else if(strcmp(command.argv[0], "D") == 0) {
+         command.name = "rm"; //works
       }
-      else if(strcmp(argv[0], "M") && pid == 0) {
-         command.name = "nano";
-         //execvp("nano", argv);
-         //wait(&status);
+      else if(strcmp(command.argv[0], "M") == 0) {
+         command.name = "nano"; //works
       }
-      else if(strcmp(argv[0], "P") && pid == 0) {
-         command.name = "more";
-         //execvp("more", argv);
-         //wait(&status);
+      else if(strcmp(command.argv[0], "P") == 0) {
+         command.name = "more"; //works
       }
-      else if(strcmp(argv[0], "S") && pid == 0) {
-         command.name = "firefox";
-         //execvp("firefox", NULL);
-      }
-      else if(strcmp(argv[0], "W") && pid == 0) {
-         command.name = "clear";
-         //wait(&status);
-      }
-      else if(strcmp(argv[0], "X") && pid == 0) {
-         command.name = "";
-      }
-      else if(strcmp(argv[0], "E") && pid == 0) {
-         command.name = "echo";
-         //execvp("echo", argv);
-         //wait(&status);
-      }
-      else if(strcmp(argv[0], "Q") && pid == 0) {
-         break;
-      }
-      else if(strcmp(argv[0], "H") && pid == 0) {
-         command.name = "man csh";
-         //execvp("man csh", NULL);
-         //wait(&status);
-      }
-      else if(strcmp(argv[0], "L") && pid == 0) {
-         if((pid = fork()) == 0) {
-         printf("\n");
-         execvp("pwd", NULL);
-         printf("\n");
-         execvp("ls -l", NULL);
+      else if(strcmp(command.argv[0], "S") == 0) {
+          if((pid = fork()) == 0) {
+            printf("\n");
+            command.name = "firefox"; // works
+            execvp(command.name, command.argv);
          }
-         wait(&status);
-         
+         wait(NULL);
+         continue;
       }
-      else {
-         printPrompt();
-         /* Read the command line and parse it */
-         readCommand(cmdLine);
-         parseCommand(cmdLine, &command);
-         command.argv[command.argc] = NULL;
+      else if(strcmp(command.argv[0], "W") == 0) {
+         command.name = "clear"; //works
+      }
+      else if(strcmp(command.argv[0], "X") == 0) {
+         command.name = command.argv[1]; // works
+      }
+      else if(strcmp(command.argv[0], "E") == 0) {
+         command.name = "echo"; // works
+      }
+      else if(strcmp(command.argv[0], "Q") == 0) {
+         break; // works
+      }
+      else if(strcmp(command.argv[0], "H") == 0) {
+         printf("\n\n\n");
+         printf("My shell supports the following commands:");
+         printf("\n\n\n\n");
+         printf("C file1 file2 : Copy; create file2, copy all bytes of file1 to file2 without"); 
+         printf(" deleting file1.");
+         printf("\n\n");
+         printf("D file : Delete the named file.");
+         printf("\n\n");
+         printf("E comment : Echo; display comment on screen");
+         printf("\n\n");
+         printf("H : Help; display the user manual.");
+         printf("\n\n");
+         printf("L : List the contents of the current directory.");
+         printf("\n\n");
+         printf("M file : Make; create the named text file by launching a text editor.");
+         printf("\n\n");
+         printf("P file : Print; display the contents of the named file on screen.");
+         printf("\n\n");
+         printf("Q : Quit the shell.");
+         printf("\n\n");
+         printf("S : Surf the web by launching FireFox as a background process.");
+         printf("\n\n");
+         printf("W : Wipe; clear the screen.");
+         printf("\n\n");
+         printf("X program : Execute the named program.");
+         printf("\n\n\n\n");
+         continue; //works
+      }
+      else if(strcmp(command.argv[0], "L") == 0) {
+         if((pid = fork()) == 0) {
+            printf("\n");
+            command.name = "pwd";
+            execvp(command.name, command.argv);
+         }
+         wait(NULL); //Wait for child to process
+         //Do it again for ls
+         if((pid = fork()) == 0) {
+            printf("\n");
+            command.name = "ls";
+            execvp(command.name, command.argv);
+         }
+         wait(NULL); //Wait for child to complete
+
+         continue;
+         
       }
 	  
       /* Create a child process to execute the command */
@@ -144,11 +163,11 @@ int main(int argc, char *argv[]) {
          execvp(command.name, command.argv);
       }
       /* Wait for the child to terminate */
-      wait(&status); /* EDIT THIS LINE */
+      wait(NULL); /* EDIT THIS LINE */
    }
 
    /* Shell termination */
-   printf("\n\n shell: Terminating successfully\n");
+   printf("\n\nshell: Terminating successfully\n\n");
    return 0;
 }
 
@@ -192,12 +211,12 @@ void printPrompt() {
    /* Build the prompt string to have the machine name,
     * current directory, or other desired information
     */
-   char buffer[PATH_MAX];
-   if(getcwd(buffer, sizeof(buffer)) != NULL) {
-      printf("%s", buffer);
-   } else {
-      perror("Working directory search failed");
-   }
+   char* user = getenv("USER");
+   printf("\n\n");
+   printf("linux(");
+   printf("%s",user);
+   printf(")|>");
+
 }
 
 void readCommand(char *buffer) {
