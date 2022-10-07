@@ -149,6 +149,7 @@ int main(int argc, char *argv[]) {
       if ((pid = fork()) == 0) {
          /* Child executing command */
          execvp(command.name, command.argv);
+         exit(0);
       }
       /* Wait for the child to terminate */
       wait(&status); /* EDIT THIS LINE */
