@@ -71,11 +71,7 @@ int main(int argc, char *argv[]) {
       readCommand(cmdLine);
       parseCommand(cmdLine, &command);
       command.argv[command.argc] = NULL;
-	  /*
-	     TODO: if the command is one of the shortcuts you're testing for
-		 either execute it directly or build a new command structure to
-		 execute next
-	  */
+
       if(strcmp(command.argv[0],"C") == 0) {
          command.name = "cp"; //works "C (filesource)(filetarget)"
       }
@@ -88,15 +84,6 @@ int main(int argc, char *argv[]) {
       else if(strcmp(command.argv[0], "P") == 0) {
          command.name = "more"; //works
       }
-      else if(strcmp(command.argv[0], "S") == 0) {
-          if((pid = fork()) == 0) {
-            printf("\n");
-            command.name = "firefox"; // works
-            execvp(command.name, command.argv);
-         }
-         wait(NULL);
-         continue;
-      }
       else if(strcmp(command.argv[0], "W") == 0) {
          command.name = "clear"; //works
       }
@@ -107,6 +94,7 @@ int main(int argc, char *argv[]) {
          command.name = "echo"; // works
       }
       else if(strcmp(command.argv[0], "Q") == 0) {
+         wait(NULL);
          break; // works
       }
       else if(strcmp(command.argv[0], "H") == 0) {
@@ -163,7 +151,7 @@ int main(int argc, char *argv[]) {
          execvp(command.name, command.argv);
       }
       /* Wait for the child to terminate */
-      wait(NULL); /* EDIT THIS LINE */
+      wait(&status); /* EDIT THIS LINE */
    }
 
    /* Shell termination */

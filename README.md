@@ -7,7 +7,8 @@ Instructions:
 3. To compile, enter "gcc read.c" and this should compile and produce an executable file called a.out
 4. To run this program, enter "./a.out" into the terminal
 5. The following output should appear: linux("Your username")|>
-6. The following commands are implemented for your use: 
+6. Note: PLEASE MAKE SURE TO ENTER THE COMMANDS CORRECTLY (Uppercase command and correct format)
+7. The following commands are implemented for your use: 
 
     • C file1 file2 : Copy file1 to file2 without deleting file1
 
@@ -24,8 +25,6 @@ Instructions:
     • P file : Show contents in the file 
 
     • Q : Quit the shell 
-
-    • S : Surf the web by launching a browser as a background process 
 
     • W : Clear the screen 
 
