@@ -10,7 +10,7 @@ Instructions:
 6. Note: PLEASE MAKE SURE TO ENTER THE COMMANDS CORRECTLY (Uppercase command and correct format)
 7. The following commands are implemented for your use: 
 
-    • C file1 file2 : Copy file1 to file2 without deleting file1
+    • C file1 file2 : Copy file1 to file2 without deleting file1 (Example will be test.txt and testcopy.txt)
 
     • D file : Deletes file
 
@@ -28,4 +28,4 @@ Instructions:
 
     • W : Clear the screen 
 
-    • X program : Execute the named program (enter: "X ./yourexecutablefile")
+    • X program : Execute the named program (enter: "X ./yourexecutablefile") Example will be ./hello in the directory
